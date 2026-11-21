@@ -1,9 +1,0 @@
-Package: com.yourname.videostartool
-Name: VideoStar Tool
-Version: 1.0.0
-Architecture: iphoneos-arm
-Description: Auto beat split, batch QR import, batch image import with floating button
-Maintainer: YourName
-Author: YourName
-Section: Tweaks
-Depends: mobilesubstrate
