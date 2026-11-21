@@ -1,0 +1,44 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Theos and iOS SDK
+        run: |
+          brew install ldid xz dpkg
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          curl -LO https://github.com/theos/sdks/archive/master.zip
+          unzip -q master.zip
+          mv sdks-master/*.sdk $HOME/theos/sdks/
+          rm -rf master.zip sdks-master
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+
+      - name: Build tweak package
+        run: |
+          make clean package FINALPACKAGE=1
+
+      - name: Upload deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb
+          path: packages/*.deb
+
+      - name: Extract dylib
+        run: |
+          mkdir -p out
+          dpkg-deb -x packages/*.deb out/
+          find out -name "*.dylib" -exec cp {} ./ \;
+
+      - name: Upload dylib artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dylib
+          path: "*.dylib"
