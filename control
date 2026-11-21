@@ -1,0 +1,9 @@
+Package: com.zzzzzz.videostartool
+Name: ZZZZZZVideoStarTool
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Tweak tự động hoá VideoStar (multi-scene QR, split, copy layer)
+Maintainer: ZZZZZZ
+Author: ZZZZZZ
+Section: Tweaks
+Depends: mobilesubstrate, firmware (>= 14.0)
