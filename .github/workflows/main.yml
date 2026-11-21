@@ -1,0 +1,41 @@
+name: Build VideoStarTool Dylib
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Compile arm64 dylib
+        run: |
+          xcrun -sdk iphoneos clang -arch arm64 -dynamiclib -fobjc-arc \
+            -miphoneos-version-min=14.0 \
+            -install_name @executable_path/Frameworks/ZZZZZZVideoStarTool.dylib \
+            -framework Foundation \
+            -framework UIKit \
+            -framework CoreGraphics \
+            -framework CoreImage \
+            -framework QuartzCore \
+            -framework PhotosUI \
+            -framework AVFoundation \
+            -framework CoreMedia \
+            VideoStarTool.m -o ZZZZZZVideoStarTool.dylib
+
+      - name: Strip signature & verify Mach-O
+        run: |
+          codesign --remove-signature ZZZZZZVideoStarTool.dylib || true
+          file ZZZZZZVideoStarTool.dylib
+          otool -L ZZZZZZVideoStarTool.dylib
+          ls -lh ZZZZZZVideoStarTool.dylib
+
+      - name: Upload dylib artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZZZZZZVideoStarTool
+          path: ZZZZZZVideoStarTool.dylib
